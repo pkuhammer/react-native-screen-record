@@ -7,52 +7,43 @@
 import Foundation
 import AVKit
 
-@objc class ScreenRecordCoordinator: NSObject
-{
+@objc class ScreenRecordCoordinator: NSObject {
     let viewOverlay = WindowUtil()
     let screenRecorder = ScreenRecorder()
-    var recordCompleted:((Error?) ->Void)?
+    var recordCompleted: ((Error?) -> Void)?
     let previewDelegateView = PreviewDelegateView()
 
-    override init()
-    {
+    override init() {
         super.init()
-        
         viewOverlay.onStopClick = {
             self.stopRecording()
         }
-        
-        
     }
 
-    func startRecording(withFileName fileName: String, recordingHandler: @escaping (Error?) -> Void,onCompletion: @escaping (Error?)->Void)
-    {
+    func startRecording(withFileName fileName: String, recordingHandler: @escaping (Error?) -> Void, onCompletion: @escaping (Error?) -> Void) {
         self.viewOverlay.show()
+        self.recordCompleted = onCompletion
         screenRecorder.startRecording(withFileName: fileName) { (error) in
             recordingHandler(error)
-            self.recordCompleted = onCompletion
         }
     }
 
-    func stopRecording()
-    {
+    func stopRecording() {
         screenRecorder.stopRecording { (error) in
             self.viewOverlay.hide()
             self.recordCompleted?(error)
         }
     }
-    
-    func removeRecording(withFilePath fileURL: String)
-    {
+
+    func removeRecording(withFilePath fileURL: String) {
         ReplayFileUtil.deleteItem(at: URL(fileURLWithPath: fileURL))
     }
-    
-    func copyRecording(withFilePath fileURL: String, destFileURL: String)
-    {
+
+    func copyRecording(withFilePath fileURL: String, destFileURL: String) {
         ReplayFileUtil.copyItem(at: URL(fileURLWithPath: fileURL), to: URL(fileURLWithPath: destFileURL))
     }
-    
-    func previewRecording (withFileName fileURL: String) {
+
+    func previewRecording(withFileName fileURL: String) {
         if UIVideoEditorController.canEditVideo(atPath: fileURL) {
             previewDelegateView.setCoordinator(coordinator: self)
             let rootView = UIApplication.getTopMostViewController()
@@ -65,8 +56,7 @@ import AVKit
         }
     }
 
-    func listAllReplays() -> Array<String>
-    {
+    func listAllReplays() -> Array<String> {
         return ReplayFileUtil.fetchAllReplays()
     }
 
@@ -74,17 +64,17 @@ import AVKit
 }
 
 class PreviewDelegateView: UIViewController, UINavigationControllerDelegate, UIVideoEditorControllerDelegate {
-    
+
     var coordinator: ScreenRecordCoordinator!
-    var isSaved:Bool = false
+    var isSaved: Bool = false
 
     func setCoordinator(coordinator: ScreenRecordCoordinator) -> Void {
         self.coordinator = coordinator
     }
-    
+
     func videoEditorController(_ editor: UIVideoEditorController, didSaveEditedVideoToPath editedVideoPath: String) {
         print("save called")
-        if(!self.isSaved) {
+        if (!self.isSaved) {
             self.isSaved = true
             print("trimmed video saved!")
             editor.dismiss(animated: true, completion: {

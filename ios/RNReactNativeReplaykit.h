@@ -2,7 +2,9 @@
 //  MIT Licence.
 
 #if __has_include("RCTBridgeModule.h")
+
 #import "RCTBridgeModule.h"
+
 #else
 #import <React/RCTBridgeModule.h>
 #endif
@@ -13,9 +15,9 @@
 
 @interface RNScreenRecord : NSObject <RCTBridgeModule>
 
-@property (strong, nonatomic) RPScreenRecorder *screenRecorder;
-@property (strong, nonatomic) RPPreviewViewController *previewViewController;
-@property (strong, nonatomic) ScreenRecordCoordinator *screenRecordCoordinator;
+@property(strong, nonatomic) RPScreenRecorder *screenRecorder;
+@property(strong, nonatomic) RPPreviewViewController *previewViewController;
+@property(strong, nonatomic) ScreenRecordCoordinator *screenRecordCoordinator;
 
 @end
 

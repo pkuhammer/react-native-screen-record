@@ -1,0 +1,9 @@
+{
+  "name": "react-native-screen-record",
+  "description": "A React Native module to access ReplayKit Screen Recording Framework on iOS",
+  "main": "index.js",
+  "version": "1.0.0",
+  "peerDependencies": {
+    "react-native": "^0.41.2"
+  }
+}
